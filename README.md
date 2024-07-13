@@ -30,7 +30,7 @@ npm run start
 
 ```
 
-To run the application in development mode with automatic restarts, although the banah handles that use:
+To run the application in development mode with automatic restarts:
 
 ```
 npm run server
@@ -58,7 +58,7 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the MIT License.
 
-## Running the Scaffold Command
+## Running the Building Command
 
 ```
 banah create your-project-name

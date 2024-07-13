@@ -22,7 +22,7 @@
     "cors"
   ],
   "author": "CodeMaestro-dev",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/CodeMaestro-dev/banah.js/issues"
   },
