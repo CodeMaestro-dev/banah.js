@@ -1,0 +1,33 @@
+{
+  "name": "banah",
+  "version": "1.0.0",
+  "description": "Start up your node js prjects with ease. No need to install express, cors, or the basic things you need for a nodejs project. We got you covered.",
+  "main": "bin/banah.js",
+  "bin": {
+    "banah": "./bin/banah.js"
+  },
+  "scripts": {
+    "start": "node ./bin/banah.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeMaestro-dev/banah.js"
+  },
+  "keywords": [
+    "backend",
+    "nodejs",
+    "quickstart",
+    "javascript",
+    "express",
+    "cors"
+  ],
+  "author": "CodeMaestro-dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CodeMaestro-dev/banah.js/issues"
+  },
+  "homepage": "https://github.com/CodeMaestro-dev/banah.js#readme",
+  "dependencies": {
+    "commander": "^12.1.0"
+  }
+}
