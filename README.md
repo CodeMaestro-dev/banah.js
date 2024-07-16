@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="/" target="_blank" rel="noopener noreferrer">
+    <img width="180" src="/banah.png" alt="Banah logo">
+  </a>
+</p>
+
 # Banah JS
 
 ## Description
