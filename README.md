@@ -14,10 +14,17 @@ Start up your node js prjects with ease. No need to install express, cors, or th
 
 ## Installation
 
-To install the project dependencies, run:
+To install the banah js:
 
 ```
-npm install
+npm install -g banah
+
+```
+
+## Running the Building Command
+
+```
+banah create your-project-name
 
 ```
 
@@ -57,10 +64,3 @@ Contributions are welcome! Please follow these steps:
 ## License
 
 This project is licensed under the MIT License.
-
-## Running the Building Command
-
-```
-banah create your-project-name
-
-```
