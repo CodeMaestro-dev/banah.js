@@ -28,9 +28,7 @@
   },
   "homepage": "https://github.com/CodeMaestro-dev/banah.js#readme",
   "dependencies": {
-    "commander": "^12.1.0"
-  },
-  "devDependencies": {
+    "commander": "^12.1.0",
     "colors-cli": "^1.0.33"
   }
 }
