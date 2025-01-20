@@ -1,6 +1,6 @@
 {
   "name": "banah",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Start up your node js prjects with ease. No need to install express, cors, or the basic things you need for a nodejs project. We got you covered.",
   "main": "bin/banah.js",
   "bin": {
