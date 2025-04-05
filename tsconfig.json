@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "rootDir": "lib",
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": ["lib", "bin"]
+}

@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
-const { program } = require("commander");
-const createProject = require("../lib/createProject");
+import { Command } from "commander";
+import createProject from "../createProject";
+
+const program = new Command();
 
 program
   .version("1.0.0")
   .command("create <project-name>")
   .description("Create a new Node.js project")
-  .action((projectName) => {
+  .action((projectName: string) => {
     createProject(projectName);
   });
 

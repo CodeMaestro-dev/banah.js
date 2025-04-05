@@ -1,23 +1,26 @@
 {
   "name": "banah",
-  "version": "1.0.5",
-  "description": "Start up your node js prjects with ease. No need to install express, cors, or the basic things you need for a nodejs project. We got you covered.",
-  "main": "bin/banah.js",
+  "version": "1.0.11",
+  "description": "Start up your Node.js projects with ease. No need to install express, cors, or the basic things you need for a Node.js project. We got you covered.",
+  "main": "dist/bin/banah.js",
   "bin": {
-    "banah": "./bin/banah.js"
+    "banah": "dist/bin/banah.js"
   },
   "scripts": {
-    "start": "node ./bin/banah.js"
+    "build": "tsc",
+    "start": "node ./dist/bin/banah.js",
+    "dev": "ts-node lib/bin/banah.ts",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CodeMaestro-dev/banah.js"
+    "url": "git+https://github.com/CodeMaestro-dev/banah.js.git"
   },
   "keywords": [
     "backend",
     "nodejs",
     "quickstart",
-    "javascript",
+    "typescript",
     "express",
     "cors"
   ],
@@ -28,7 +31,18 @@
   },
   "homepage": "https://github.com/CodeMaestro-dev/banah.js#readme",
   "dependencies": {
+    "colors-cli": "^1.0.33",
     "commander": "^12.1.0",
-    "colors-cli": "^1.0.33"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
   }
 }

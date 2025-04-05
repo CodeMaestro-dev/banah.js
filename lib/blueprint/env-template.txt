@@ -1,0 +1,12 @@
+# .env file for the project
+# Feel free to add the enviroment variables you need
+
+# Example
+# PORT=3000
+
+# PostgreSQL database credentials
+# DB_HOST=localhost
+# DB_PORT=5432
+# DB_USER=myuser
+# DB_PASSWORD=mypassword
+# DB_NAME=mydatabase
