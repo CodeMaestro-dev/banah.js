@@ -13,6 +13,7 @@ const colors_cli_1 = __importDefault(require("colors-cli"));
  */
 function createProject(projectName) {
     try {
+        // ✅ Validate name
         if (!projectName || !/^[a-zA-Z0-9_-]+$/.test(projectName)) {
             console.error(colors_cli_1.default.red("Invalid project name. Use only letters, numbers, underscores, or hyphens."));
             process.exit(1);
@@ -24,108 +25,55 @@ function createProject(projectName) {
         }
         console.log(colors_cli_1.default.cyan(`Creating TypeScript project: ${projectName}...`));
         fs_1.default.mkdirSync(projectPath, { recursive: true });
-        const blueprintDir = path_1.default.join(__dirname, "./blueprint");
-        // Copy TypeScript-compatible package.json
-        // Not this is the TypeScript for ESM (ECMA Script) in Node.JS not CommonJS
-        const packageJsonContent = `
-{
-  "name": "seventh-test",
-  "version": "1.0.0",
-  "description": "A TypeScript-based Node.js project scaffolded by Banah JS.",
-  "main": "dist/index.js",
-  "type": "module",
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.17.30",
-    "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
-  }
-}
-`;
-        fs_1.default.writeFileSync(path_1.default.join(projectPath, "package.json"), packageJsonContent);
-        // Create TypeScript configuration file
-        const tsconfigContent = `{
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "rootDir": "src",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
-  },
-  "include": ["src"]
-}`;
-        fs_1.default.writeFileSync(path_1.default.join(projectPath, "tsconfig.json"), tsconfigContent);
-        // Create .gitignore file
-        const gitignoreContent = `
-    # Node modules
-    node_modules/
-
-    # Logs
-    logs
-    *.log
-    npm-debug.log*
-    yarn-debug.log*
-    yarn-error.log*
-
-    # dotenv environment variable files
-    .env
-
-    # Compiled output
-    dist/
-
-    # Operating system files
-    .DS_Store
-    Thumbs.db
-    `;
-        fs_1.default.writeFileSync(path_1.default.join(projectPath, ".gitignore"), gitignoreContent);
-        // Create README.md
-        fs_1.default.writeFileSync(path_1.default.join(projectPath, "README.md"), `# ${projectName}\n\nA TypeScript-based Node.js project.`);
-        // Create .env file
-        fs_1.default.writeFileSync(path_1.default.join(projectPath, ".env"), `PORT=3000`);
-        // Create src directory and a basic TypeScript entry point
+        const blueprintDir = path_1.default.join(__dirname, "../lib/blueprint");
+        // ✅ 1. Copy package.json with {{projectName}} replacement
+        const packageJsonPath = path_1.default.join(blueprintDir, "package.json");
+        if (fs_1.default.existsSync(packageJsonPath)) {
+            const pkgTemplate = fs_1.default.readFileSync(packageJsonPath, "utf-8");
+            const pkgContent = pkgTemplate.replace(/{{projectName}}/g, projectName);
+            fs_1.default.writeFileSync(path_1.default.join(projectPath, "package.json"), pkgContent);
+        }
+        // ✅ 2. Copy tsconfig.json
+        const tsconfigPath = path_1.default.join(blueprintDir, "tsconfig.json");
+        if (fs_1.default.existsSync(tsconfigPath)) {
+            const tsconfig = fs_1.default.readFileSync(tsconfigPath, "utf-8");
+            fs_1.default.writeFileSync(path_1.default.join(projectPath, "tsconfig.json"), tsconfig);
+        }
+        // ✅ 3. Copy .gitignore
+        const gitignorePath = path_1.default.join(blueprintDir, ".gitignore");
+        if (fs_1.default.existsSync(gitignorePath)) {
+            const gitignoreContent = fs_1.default.readFileSync(gitignorePath, "utf-8");
+            fs_1.default.writeFileSync(path_1.default.join(projectPath, ".gitignore"), gitignoreContent);
+        }
+        // ✅ 4. Copy README.md (with project name replacement)
+        const readmePath = path_1.default.join(blueprintDir, "README.md");
+        if (fs_1.default.existsSync(readmePath)) {
+            const readmeTemplate = fs_1.default.readFileSync(readmePath, "utf-8");
+            const readmeContent = readmeTemplate.replace(/{{projectName}}/g, projectName);
+            fs_1.default.writeFileSync(path_1.default.join(projectPath, "README.md"), readmeContent);
+        }
+        // ✅ 5. Copy .env file
+        const envTemplatePath = path_1.default.join(blueprintDir, "env-template.txt");
+        if (fs_1.default.existsSync(envTemplatePath)) {
+            const envContent = fs_1.default.readFileSync(envTemplatePath, "utf-8");
+            fs_1.default.writeFileSync(path_1.default.join(projectPath, ".env"), envContent);
+        }
+        // ✅ 6. Create src/ folder and copy index.ts
         const srcDir = path_1.default.join(projectPath, "src");
-        fs_1.default.mkdirSync(srcDir);
-        const indexTsContent = `import express from "express";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-  res.send("Hello from Banah!");
-});
-
-app.listen(PORT, () => {
-  console.log(\`Server is running on port \${PORT}\`);
-});`;
-        fs_1.default.writeFileSync(path_1.default.join(srcDir, "index.ts"), indexTsContent);
-        // Create a controller folder
-        const controllerFolderPath = path_1.default.join(srcDir, "controller");
-        fs_1.default.mkdirSync(controllerFolderPath);
+        fs_1.default.mkdirSync(srcDir, { recursive: true });
+        const indexTSPath = path_1.default.join(blueprintDir, "index.ts");
+        if (fs_1.default.existsSync(indexTSPath)) {
+            const indexContent = fs_1.default.readFileSync(indexTSPath, "utf-8");
+            fs_1.default.writeFileSync(path_1.default.join(srcDir, "index.ts"), indexContent);
+        }
+        // ✅ 7. Create src/controller folder
+        const controllerDir = path_1.default.join(srcDir, "controller");
+        fs_1.default.mkdirSync(controllerDir);
         console.log(colors_cli_1.default.green("Controller folder created."));
-        // Install dependencies
+        // ✅ 8. Install dependencies
         process.chdir(projectPath);
         console.log(colors_cli_1.default.yellow("Installing dependencies..."));
-        (0, child_process_1.execSync)("npm install && npm install -D typescript ts-node @types/node @types/express", { stdio: "inherit" });
+        (0, child_process_1.execSync)("npm install", { stdio: "inherit" });
         console.log(colors_cli_1.default.green(`\nTypeScript project "${projectName}" created successfully.`));
         console.log(colors_cli_1.default.magenta(`\nNavigate to your project directory:\ncd ${projectName}`));
     }

@@ -9,6 +9,7 @@ import color from "colors-cli";
  */
 function createProject(projectName: string): void {
   try {
+    // ✅ Validate name
     if (!projectName || !/^[a-zA-Z0-9_-]+$/.test(projectName)) {
       console.error(
         color.red(
@@ -19,7 +20,6 @@ function createProject(projectName: string): void {
     }
 
     const projectPath = path.join(process.cwd(), projectName);
-
     if (fs.existsSync(projectPath)) {
       console.error(color.red(`Project "${projectName}" already exists.`));
       process.exit(1);
@@ -28,129 +28,67 @@ function createProject(projectName: string): void {
     console.log(color.cyan(`Creating TypeScript project: ${projectName}...`));
     fs.mkdirSync(projectPath, { recursive: true });
 
-    const blueprintDir = path.join(__dirname, "./blueprint");
+    const blueprintDir = path.join(__dirname, "../lib/blueprint");
 
-    // Copy TypeScript-compatible package.json
-    // Not this is the TypeScript for ESM (ECMA Script) in Node.JS not CommonJS
-    const packageJsonContent = `
-{
-  "name": "seventh-test",
-  "version": "1.0.0",
-  "description": "A TypeScript-based Node.js project scaffolded by Banah JS.",
-  "main": "dist/index.js",
-  "type": "module",
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.17.30",
-    "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
-  }
-}
-`;
+    // ✅ 1. Copy package.json with {{projectName}} replacement
+    const packageJsonPath = path.join(blueprintDir, "package.json");
+    if (fs.existsSync(packageJsonPath)) {
+      const pkgTemplate = fs.readFileSync(packageJsonPath, "utf-8");
+      const pkgContent = pkgTemplate.replace(/{{projectName}}/g, projectName);
+      fs.writeFileSync(path.join(projectPath, "package.json"), pkgContent);
+    }
 
-    fs.writeFileSync(
-      path.join(projectPath, "package.json"),
-      packageJsonContent
-    );
+    // ✅ 2. Copy tsconfig.json
+    const tsconfigPath = path.join(blueprintDir, "tsconfig.json");
+    if (fs.existsSync(tsconfigPath)) {
+      const tsconfig = fs.readFileSync(tsconfigPath, "utf-8");
+      fs.writeFileSync(path.join(projectPath, "tsconfig.json"), tsconfig);
+    }
 
-    // Create TypeScript configuration file
-    const tsconfigContent = `{
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "rootDir": "src",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
-  },
-  "include": ["src"]
-}`;
+    // ✅ 3. Copy .gitignore
+    const gitignorePath = path.join(blueprintDir, ".gitignore");
+    if (fs.existsSync(gitignorePath)) {
+      const gitignoreContent = fs.readFileSync(gitignorePath, "utf-8");
+      fs.writeFileSync(path.join(projectPath, ".gitignore"), gitignoreContent);
+    }
 
-    fs.writeFileSync(path.join(projectPath, "tsconfig.json"), tsconfigContent);
+    // ✅ 4. Copy README.md (with project name replacement)
+    const readmePath = path.join(blueprintDir, "README.md");
+    if (fs.existsSync(readmePath)) {
+      const readmeTemplate = fs.readFileSync(readmePath, "utf-8");
+      const readmeContent = readmeTemplate.replace(
+        /{{projectName}}/g,
+        projectName
+      );
+      fs.writeFileSync(path.join(projectPath, "README.md"), readmeContent);
+    }
 
-    // Create .gitignore file
-    const gitignoreContent = `
-    # Node modules
-    node_modules/
+    // ✅ 5. Copy .env file
+    const envTemplatePath = path.join(blueprintDir, "env-template.txt");
+    if (fs.existsSync(envTemplatePath)) {
+      const envContent = fs.readFileSync(envTemplatePath, "utf-8");
+      fs.writeFileSync(path.join(projectPath, ".env"), envContent);
+    }
 
-    # Logs
-    logs
-    *.log
-    npm-debug.log*
-    yarn-debug.log*
-    yarn-error.log*
-
-    # dotenv environment variable files
-    .env
-
-    # Compiled output
-    dist/
-
-    # Operating system files
-    .DS_Store
-    Thumbs.db
-    `;
-    fs.writeFileSync(path.join(projectPath, ".gitignore"), gitignoreContent);
-
-    // Create README.md
-    fs.writeFileSync(
-      path.join(projectPath, "README.md"),
-      `# ${projectName}\n\nA TypeScript-based Node.js project.`
-    );
-
-    // Create .env file
-    fs.writeFileSync(path.join(projectPath, ".env"), `PORT=3000`);
-
-    // Create src directory and a basic TypeScript entry point
+    // ✅ 6. Create src/ folder and copy index.ts
     const srcDir = path.join(projectPath, "src");
-    fs.mkdirSync(srcDir);
+    fs.mkdirSync(srcDir, { recursive: true });
 
-    const indexTsContent = `import express from "express";
-import dotenv from "dotenv";
+    const indexTSPath = path.join(blueprintDir, "index.ts");
+    if (fs.existsSync(indexTSPath)) {
+      const indexContent = fs.readFileSync(indexTSPath, "utf-8");
+      fs.writeFileSync(path.join(srcDir, "index.ts"), indexContent);
+    }
 
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-  res.send("Hello from Banah!");
-});
-
-app.listen(PORT, () => {
-  console.log(\`Server is running on port \${PORT}\`);
-});`;
-
-    fs.writeFileSync(path.join(srcDir, "index.ts"), indexTsContent);
-
-    // Create a controller folder
-    const controllerFolderPath = path.join(srcDir, "controller");
-    fs.mkdirSync(controllerFolderPath);
+    // ✅ 7. Create src/controller folder
+    const controllerDir = path.join(srcDir, "controller");
+    fs.mkdirSync(controllerDir);
     console.log(color.green("Controller folder created."));
 
-    // Install dependencies
+    // ✅ 8. Install dependencies
     process.chdir(projectPath);
     console.log(color.yellow("Installing dependencies..."));
-    execSync(
-      "npm install && npm install -D typescript ts-node @types/node @types/express",
-      { stdio: "inherit" }
-    );
+    execSync("npm install", { stdio: "inherit" });
 
     console.log(
       color.green(`\nTypeScript project "${projectName}" created successfully.`)
